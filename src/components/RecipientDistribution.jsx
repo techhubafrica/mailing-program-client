@@ -37,7 +37,7 @@ export const RecipientDistribution = ({ recipientStats }) => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recipients by Organization</CardTitle>
+          <CardTitle>Recipients by Organizations</CardTitle>
           <CardDescription>Top organizations in your campaigns</CardDescription>
         </CardHeader>
         <CardContent>
