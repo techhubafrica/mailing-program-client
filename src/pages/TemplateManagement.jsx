@@ -15,7 +15,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
-  CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { CreateTemplateDialog } from '@/components/CreateTemplateDialog';
