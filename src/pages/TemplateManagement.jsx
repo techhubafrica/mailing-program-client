@@ -69,7 +69,7 @@ export default function TemplateManagement() {
 
   const TemplateRow = ({ template }) => {
     const isExpanded = expandedTemplate === template._id;
-
+  
     return (
       <>
         <motion.tr
@@ -144,7 +144,7 @@ export default function TemplateManagement() {
                   <div>
                     <h4 className="mb-2 text-sm font-medium">Template Content:</h4>
                     <pre className="p-4 text-sm whitespace-pre-wrap border rounded-md bg-background">
-                      {template?.content}
+                      {template.rawContent || template.content}
                     </pre>
                   </div>
                   {template.variables?.length > 0 && (
