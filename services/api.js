@@ -1,21 +1,52 @@
 import axios from "axios"
 
 const api = axios.create({
-  baseURL: "https://tech-hub-mailing-program-server.onrender.com/api",
-  // baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:5000/api",
 })
-
-export const fetchCampaigns = async () => {
+export const fetchCampaigns = async ({ status = "", search = "" }) => {
   try {
-    const response = await api.get("/campaigns?include=recipients")
+    console.log(`Fetching campaigns: status=${status}, search=${search}`)
+    const response = await api.get("/campaigns", {
+      params: { status, search, include: "recipients" },
+    })
+    console.log("API response:", response.data)
     return response.data
   } catch (error) {
-    console.error("Error fetching campaigns:", error)
+    console.error("Error fetching campaigns:", error.response?.data || error.message)
     throw error
   }
 }
-
-
+export const campaignApi = {
+  getAll: async () => {
+    try {
+      const response = await api.get("/campaigns")
+      return response.data
+    } catch (error) {
+      console.error("Error fetching campaigns:", error)
+      throw error
+    }
+  },
+  create: (data) => {
+    return api.post("/campaigns", {
+      name: data.name,
+      template: data.templateId,
+      recipients: data.recipients,
+      scheduledDate: data.scheduledDate,
+    })
+  },
+  getById: (id) => api.get(`/campaigns/${id}`),
+  update: (id, data) => {
+    const payload = {
+      name: data.name,
+      templateId: data.templateId,
+      recipientTags: data.recipientTags,
+      scheduledDate: data.scheduledDate,
+    }
+    return api.put(`/campaigns/${id}`, payload)
+  },
+  delete: (id) => api.delete(`/campaigns/${id}`),
+  execute: (id) => api.post(`/campaigns/${id}/execute`),
+}
 
 export const templateApi = {
   create: (data) => api.post("/templates", data),
@@ -23,32 +54,6 @@ export const templateApi = {
   getById: (id) => api.get(`/templates/${id}`),
   update: (id, data) => api.put(`/templates/${id}`, data),
   delete: (id) => api.delete(`/templates/${id}`),
-}
-
-export const campaignApi = {
-  create: (data) => {
-    return api.post("/campaigns", {
-      name: data.name,
-      template: data.templateId, // Changed from templateId to template
-      recipients: data.recipients, // Changed from recipientTags to recipients
-      scheduledDate: data.scheduledDate,
-    })
-  },
-  getAll: (page = 1, limit = 10) => api.get(`/campaigns?page=${page}&limit=${limit}`),
-  getById: (id) => api.get(`/campaigns/${id}`),
-  update: (id, data) => {
-    const payload = {
-      name: data.name,
-      templateId: data.templateId,
-      scheduledDate: data.scheduledDate,
-    }
-    if (data.recipientTags) {
-      payload.recipientTags = data.recipientTags
-    }
-    return api.put(`/campaigns/${id}`, payload)
-  },
-  delete: (id) => api.delete(`/campaigns/${id}`),
-  execute: (id) => api.post(`/campaigns/${id}/execute`),
 }
 
 export const contactApi = {
@@ -70,4 +75,3 @@ export const emailApi = {
   sendBulk: (data) => api.post("/emails/send-bulk", data),
   sendSingle: (data) => api.post("/emails/single", data),
 }
-

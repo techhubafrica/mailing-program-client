@@ -54,6 +54,10 @@ export default {
   		}
   	}
   },
-  plugins: [tailwindcssAnimate, require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
+  safelist: [
+	'data-[state=closed]:slide-out-to-top-[48%]',
+	'data-[state=open]:slide-in-from-top-[48%]'
+]
 }
 

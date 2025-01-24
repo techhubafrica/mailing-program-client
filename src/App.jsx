@@ -1,11 +1,11 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import routes from './routes';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <AppLayout>
         <Routes>
           {routes.map(({ path, component: Component }) => (
@@ -14,7 +14,7 @@ function App() {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AppLayout>
-    </Router>
+    </BrowserRouter>
   );
 }
 

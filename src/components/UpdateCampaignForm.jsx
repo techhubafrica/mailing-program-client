@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { campaignApi, templateApi, contactApi } from "../../services/api"
 import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 
 const updateCampaignSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -21,6 +22,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
   const [templates, setTemplates] = useState([])
   const [tags, setTags] = useState([])
   const [loading, setLoading] = useState(false)
+  const [fetchingData, setFetchingData] = useState(true)
 
   const {
     control,
@@ -39,6 +41,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setFetchingData(true)
         const [templatesResponse, contactsResponse] = await Promise.all([templateApi.getAll(), contactApi.getAll()])
 
         setTemplates(
@@ -57,6 +60,8 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
       } catch (error) {
         console.error("Failed to fetch data:", error)
         toast.error("Failed to fetch data")
+      } finally {
+        setFetchingData(false)
       }
     }
     fetchData()
@@ -71,7 +76,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
         recipientTags: data.recipientTags && data.recipientTags.length > 0 ? data.recipientTags : undefined,
         scheduledDate: data.scheduledDate ? new Date(data.scheduledDate).toISOString() : undefined,
       }
-      const response = await campaignApi.update(campaign._id, payload)
+      await campaignApi.update(campaign._id, payload)
       toast.success("Campaign updated successfully")
       onUpdateSuccess()
       onClose()
@@ -93,98 +98,126 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Update Campaign</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-gray-900">Update Campaign</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Campaign Name
-              </label>
-              <Controller name="name" control={control} render={({ field }) => <Input {...field} />} />
-              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="templateId" className="block text-sm font-medium text-gray-700">
-                Template
-              </label>
-              <Controller
-                name="templateId"
-                control={control}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a template" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {templates.map((template) => (
-                        <SelectItem key={template._id} value={template._id}>
-                          {template.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.templateId && <p className="mt-1 text-sm text-red-600">{errors.templateId.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Recipient Tags (Optional)</label>
-              <div className="mt-2 space-y-2">
+        {fetchingData ? (
+          <div className="flex items-center justify-center h-48">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  Campaign Name
+                </label>
                 <Controller
-                  name="recipientTags"
+                  name="name"
                   control={control}
                   render={({ field }) => (
-                    <div className="flex flex-wrap gap-2">
-                      {tags.map((tag) => (
-                        <div key={tag} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={tag}
-                            checked={field.value?.includes(tag)}
-                            onCheckedChange={(checked) => {
-                              const updatedTags = checked
-                                ? [...(field.value || []), tag]
-                                : (field.value || []).filter((value) => value !== tag)
-                              field.onChange(updatedTags)
-                            }}
-                          />
-                          <label htmlFor={tag} className="text-sm">
-                            {tag}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                    <Input
+                      {...field}
+                      className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                    />
+                  )}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="templateId" className="block text-sm font-medium text-gray-700">
+                  Template
+                </label>
+                <Controller
+                  name="templateId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <SelectValue placeholder="Select a template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {templates.map((template) => (
+                          <SelectItem key={template._id} value={template._id}>
+                            {template.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.templateId && <p className="mt-1 text-sm text-red-600">{errors.templateId.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Recipient Tags (Optional)</label>
+                <div className="p-2 mt-2 space-y-2 overflow-y-auto border rounded-md max-h-40">
+                  <Controller
+                    name="recipientTags"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex flex-wrap gap-2">
+                        {tags.map((tag) => (
+                          <div key={tag} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={tag}
+                              checked={field.value?.includes(tag)}
+                              onCheckedChange={(checked) => {
+                                const updatedTags = checked
+                                  ? [...(field.value || []), tag]
+                                  : (field.value || []).filter((value) => value !== tag)
+                                field.onChange(updatedTags)
+                              }}
+                            />
+                            <label htmlFor={tag} className="text-sm">
+                              {tag}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  />
+                </div>
+                {errors.recipientTags && <p className="mt-1 text-sm text-red-600">{errors.recipientTags.message}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="scheduledDate" className="block text-sm font-medium text-gray-700">
+                  Scheduled Date
+                </label>
+                <Controller
+                  name="scheduledDate"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="date"
+                      {...field}
+                      className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                    />
                   )}
                 />
               </div>
-              {errors.recipientTags && <p className="mt-1 text-sm text-red-600">{errors.recipientTags.message}</p>}
             </div>
 
-            <div>
-              <label htmlFor="scheduledDate" className="block text-sm font-medium text-gray-700">
-                Scheduled Date
-              </label>
-              <Controller
-                name="scheduledDate"
-                control={control}
-                render={({ field }) => <Input type="date" {...field} />}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Updating..." : "Update Campaign"}
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={onClose} className="mr-2">
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading} className="text-white">
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Update Campaign"
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   )
