@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus, Image, Link as LinkIcon, Bold, Italic, ListOrdered, List } from "lucide-react";
-import { templateApi } from '../../services/api';
+import { templateApi } from '../services/api';
 
 const templateSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),

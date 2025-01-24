@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { campaignApi } from "../../services/api"
+import { campaignApi } from "../services/api"
 import UpdateCampaignForm from "@/components/UpdateCampaignForm"
 import { Link } from "react-router-dom"
 

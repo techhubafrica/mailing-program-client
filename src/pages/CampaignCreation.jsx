@@ -10,7 +10,7 @@ import { Loader2, CheckCircle2, Mail, Users, Calendar, ArrowLeft, ArrowRight } f
 import { format } from "date-fns"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useNavigate } from "react-router-dom"
-import { campaignApi, contactApi, templateApi } from "../../services/api"
+import { campaignApi, contactApi, templateApi } from "../services/api"
 const campaignSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   templateId: z.string().min(1, "Please select a template"),

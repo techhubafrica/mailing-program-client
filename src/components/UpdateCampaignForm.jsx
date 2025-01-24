@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { campaignApi, templateApi, contactApi } from "../../services/api"
+import { campaignApi, templateApi, contactApi } from "../services/api"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
