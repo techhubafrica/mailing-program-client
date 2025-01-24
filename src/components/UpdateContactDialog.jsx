@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { contactApi } from "../services/api"
+import { contactApi } from "../../services/api"
 
 const contactSchema = z.object({
   email: z.string().email("Invalid email address"),
