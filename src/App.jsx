@@ -2,7 +2,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import routes from './routes';
-
 function App() {
   return (
     <BrowserRouter>
