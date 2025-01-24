@@ -3,7 +3,6 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { motion, AnimatePresence } from "framer-motion"
-import { emailApi, templateApi, contactApi } from "../../services/api"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +12,7 @@ import { toast } from "sonner"
 import {  Plus, X } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { contactApi, emailApi, templateApi } from "@/services/api"
 
 const mailSchema = z.object({
   templateId: z.string().min(1, "Please select a template"),

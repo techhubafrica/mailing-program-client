@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { contactApi } from "../../services/api"
+import { contactApi } from "@/services/api"
 
 const contactSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -74,7 +74,7 @@ export function UpdateContactDialog({ contact, onContactUpdated }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon">
-          <Pencil className="h-4 w-4" />
+          <Pencil className="w-4 h-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -139,7 +139,7 @@ export function UpdateContactDialog({ contact, onContactUpdated }) {
                 {tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md flex items-center gap-1"
+                    className="flex items-center gap-1 px-2 py-1 text-blue-800 bg-blue-100 rounded-md"
                   >
                     {tag}
                     <button

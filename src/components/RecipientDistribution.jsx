@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer, Legend } from 'recharts';
 
 export const RecipientDistribution = ({ recipientStats }) => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];

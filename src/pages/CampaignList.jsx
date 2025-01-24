@@ -14,10 +14,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { campaignApi } from "../../services/api"
+import { Card, CardContent } from "@/components/ui/card"
 import UpdateCampaignForm from "@/components/UpdateCampaignForm"
 import { Link } from "react-router-dom"
+import { campaignApi } from "@/services/api"
 
 const statusColors = {
   draft: "bg-yellow-100 text-yellow-800",
