@@ -46,7 +46,7 @@ export function CSVUploadDialog({ onContactsUploaded }) {
     formData.append("file", file)
 
     try {
-      const response = await fetch('http://localhost:5000/api/contacts/upload', {
+      const response = await fetch('https://tech-hub-mailing-program-server.onrender.com/api/contacts/upload', {
         method: 'POST',
         body: formData,
         onUploadProgress: (progressEvent) => {
@@ -87,7 +87,7 @@ export function CSVUploadDialog({ onContactsUploaded }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Upload className="mr-2 h-4 w-4" />
+          <Upload className="w-4 h-4 mr-2" />
           Upload CSV
         </Button>
       </DialogTrigger>
@@ -128,7 +128,7 @@ export function CSVUploadDialog({ onContactsUploaded }) {
         {isUploading && (
           <div className="mt-4">
             <Progress value={uploadProgress} className="w-full" />
-            <p className="text-center mt-2">Uploading... {uploadProgress}%</p>
+            <p className="mt-2 text-center">Uploading... {uploadProgress}%</p>
           </div>
         )}
       </DialogContent>
