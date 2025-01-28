@@ -1,16 +1,14 @@
 import axios from "axios"
 
 const api = axios.create({
-    baseURL: "https://tech-hub-mailing-program-server.onrender.com/api"
-  // baseURL: "http://localhost:5000/api",
+    // baseURL: "https://tech-hub-mailing-program-server.onrender.com/api"
+   baseURL: "http://localhost:5000/api",
 })
 export const fetchCampaigns = async ({ status = "", search = "" }) => {
   try {
-    console.log(`Fetching campaigns: status=${status}, search=${search}`)
     const response = await api.get("/campaigns", {
       params: { status, search, include: "recipients" },
     })
-    console.log("API response:", response.data)
     return response.data
   } catch (error) {
     console.error("Error fetching campaigns:", error.response?.data || error.message)

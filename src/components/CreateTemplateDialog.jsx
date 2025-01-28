@@ -34,9 +34,9 @@ const templateSchema = z.object({
 });
 
 const commonVariables = [
-  { name: 'recipientName', display: 'Recipient Name' },
-  { name: 'recipientEmail', display: 'Recipient Email' },
-  { name: 'organization', display: 'Organization Name' },
+  { name: 'contactName', display: 'Contact Name' },
+  { name: 'contactEmail', display: 'Contact Email' },
+  { name: 'contactOrganization', display: 'ContactOrganization' },
   { name: 'senderName', display: 'Sender Name' },
   { name: 'senderTitle', display: 'Sender Title' },
 ];
@@ -59,7 +59,7 @@ export function CreateTemplateDialog({ template = null, onSuccess }) {
   });
 
   function getDefaultTemplate() {
-    return `Dear {{recipientName}},
+    return `Dear {{contactName}},
 
 I hope this email finds you well. My name is {{senderName}} from {{organization}}.
 
