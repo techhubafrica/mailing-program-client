@@ -79,28 +79,25 @@ export function CSVUploadDialog({ onContactsUploaded }) {
       const data = await uploadPromise
       setUploadResults(data)
       
-      // Check if data.errors exists and has items
-      if (!data.errors || data.errors.length === 0) {
+      // Always trigger onContactsUploaded if we have imported contacts
+      if (data.imported > 0) {
+        onContactsUploaded?.()
+      }
+
+      // Show appropriate toast message
+      if (data.errors && data.errors.length > 0) {
+        toast.warning("Upload completed with some issues", {
+          description: `Imported: ${data.imported || 0}, Errors: ${data.errors.length}`,
+        })
+      } else {
         toast.success("Upload successful", {
           description: `Imported ${data.imported || 0} contacts${data.duplicates ? `, ${data.duplicates} duplicates skipped` : ''}`,
         })
-        onContactsUploaded?.()
-        setOpen(false)
-      } else {
-        // Only show warning if there are actual errors
-        if (Array.isArray(data.errors) && data.errors.length > 0) {
-          // toast.warning("Upload completed with errors", {
-          //   description: `Imported: ${data.imported || 0}, Errors: ${data.errors.length}`,
-          // })
-        } else {
-          // If no errors, treat as success
-          toast.success("Upload successful", {
-            description: `Imported ${data.imported || 0} contacts${data.duplicates ? `, ${data.duplicates} duplicates skipped` : ''}`,
-          })
-          onContactsUploaded?.()
-          setOpen(false)
-        }
       }
+
+      // Close dialog after successful upload, regardless of errors
+      setOpen(false)
+
     } catch (error) {
       console.error('Upload error:', error)
       toast.error("Upload failed", {

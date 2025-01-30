@@ -123,7 +123,7 @@ export default function ContactManagement() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <TableCell>{contact.name}</TableCell>
+                        <TableCell className="capitalize">{contact.name}</TableCell>
                         <TableCell>{contact.email}</TableCell>
                         <TableCell>{contact.organization || "-"}</TableCell>
                         <TableCell>

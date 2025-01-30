@@ -6,15 +6,15 @@ export const CampaignTable = ({ campaigns }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Campaign Recipients Overview</CardTitle>
-        <CardDescription>Detailed view of campaign recipients and stats</CardDescription>
+        <CardTitle>Campaign Contacts Overview</CardTitle>
+        <CardDescription>Detailed view of campaign contacts and stats</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Campaign</TableHead>
-              <TableHead>Recipients</TableHead>
+              <TableHead>Contacts</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Sent</TableHead>
               <TableHead>Opened</TableHead>
@@ -27,9 +27,9 @@ export const CampaignTable = ({ campaigns }) => {
                 <TableCell className="font-medium">{campaign.name}</TableCell>
                 <TableCell>
                   <div className="flex flex-col">
-                    <span>{campaign.recipients?.length || 0} total</span>
+                    <span>{campaign.contacts?.length || 0} total</span>
                     <span className="text-sm text-muted-foreground">
-                      {campaign.recipients?.filter((r) => r.isActive).length || 0} active
+                      {campaign.contacts?.filter((r) => r.isActive).length || 0} active
                     </span>
                   </div>
                 </TableCell>

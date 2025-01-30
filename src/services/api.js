@@ -7,7 +7,7 @@ const api = axios.create({
 export const fetchCampaigns = async ({ status = "", search = "" }) => {
   try {
     const response = await api.get("/campaigns", {
-      params: { status, search, include: "recipients" },
+      params: { status, search, include: "contacts" },
     })
     return response.data
   } catch (error) {
@@ -29,7 +29,7 @@ export const campaignApi = {
     return api.post("/campaigns", {
       name: data.name,
       template: data.templateId,
-      recipients: data.recipients,
+      contacts: data.contacts,
       scheduledDate: data.scheduledDate,
     })
   },
@@ -38,7 +38,7 @@ export const campaignApi = {
     const payload = {
       name: data.name,
       templateId: data.templateId,
-      recipientTags: data.recipientTags,
+      contactTags: data.contactTags,
       scheduledDate: data.scheduledDate,
     }
     return api.put(`/campaigns/${id}`, payload)
@@ -54,6 +54,19 @@ export const templateApi = {
   update: (id, data) => api.put(`/templates/${id}`, data),
   delete: (id) => api.delete(`/templates/${id}`),
 }
+
+export const statsApi = {
+  getStats: async () => {
+    try {
+      const response = await api.get("/stats");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      throw error;
+    }
+  },
+};
+
 
 export const contactApi = {
   upload: (file, onUploadProgress) => {

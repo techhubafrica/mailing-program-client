@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react"
 const updateCampaignSchema = z.object({
   name: z.string().min(1, "Name is required"),
   templateId: z.string().min(1, "Template is required"),
-  recipientTags: z.array(z.string()).optional(),
+  contactTags: z.array(z.string()).optional(),
   scheduledDate: z.string().optional(),
 })
 
@@ -33,7 +33,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
     defaultValues: {
       name: campaign?.name || "",
       templateId: campaign?.template?._id || "",
-      recipientTags: campaign?.recipients?.flatMap((r) => r.tags || []) || [],
+      contactTags: campaign?.contacts?.flatMap((r) => r.tags || []) || [],
       scheduledDate: campaign?.scheduledDate ? new Date(campaign.scheduledDate).toISOString().split("T")[0] : "",
     },
   })
@@ -73,7 +73,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
       const payload = {
         name: data.name,
         templateId: data.templateId,
-        recipientTags: data.recipientTags && data.recipientTags.length > 0 ? data.recipientTags : undefined,
+        contactTags: data.contactTags && data.contactTags.length > 0 ? data.contactTags : undefined,
         scheduledDate: data.scheduledDate ? new Date(data.scheduledDate).toISOString() : undefined,
       }
       await campaignApi.update(campaign._id, payload)
@@ -152,10 +152,10 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Recipient Tags (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700">Contact Tags (Optional)</label>
                 <div className="p-2 mt-2 space-y-2 overflow-y-auto border rounded-md max-h-40">
                   <Controller
-                    name="recipientTags"
+                    name="contactTags"
                     control={control}
                     render={({ field }) => (
                       <div className="flex flex-wrap gap-2">
@@ -180,7 +180,7 @@ const UpdateCampaignForm = ({ campaign, onClose, onUpdateSuccess }) => {
                     )}
                   />
                 </div>
-                {errors.recipientTags && <p className="mt-1 text-sm text-red-600">{errors.recipientTags.message}</p>}
+                {errors.contactTags && <p className="mt-1 text-sm text-red-600">{errors.contactTags.message}</p>}
               </div>
 
               <div>

@@ -3,21 +3,34 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { contactApi, emailApi, templateApi } from "@/services/api";
 
 // Zod schema for form validation
 const mailSchema = z.object({
   templateId: z.string().min(1, "Please select a template"),
-  recipients: z.array(z.string()).min(1, "At least one recipient is required"),
+  contacts: z.array(z.string()).min(1, "At least one contact is required"),
   customVariables: z.record(z.string(), z.string()).optional(),
 });
 
@@ -35,25 +48,43 @@ const TemplateSelector = ({ control, templates, errors }) => (
           </SelectTrigger>
           <SelectContent>
             {templates.map((template) => (
-              <SelectItem key={template._id} value={template._id} className="flex flex-col items-start">
+              <SelectItem
+                key={template._id}
+                value={template._id}
+                className="flex flex-col items-start"
+              >
                 <div className="font-medium">{template.name}</div>
-                <div className="text-sm text-muted-foreground">{template.subject}</div>
+                <div className="text-sm text-muted-foreground">
+                  {template.subject}
+                </div>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       )}
     />
-    {errors.templateId && <p className="text-sm text-red-500">{errors.templateId.message}</p>}
+    {errors.templateId && (
+      <p className="text-sm text-red-500">{errors.templateId.message}</p>
+    )}
   </div>
 );
 
 // Reusable Custom Variables Component
-const CustomVariables = ({ customVars, handleAddVariable, handleRemoveVariable, handleVariableChange }) => (
+const CustomVariables = ({
+  customVars,
+  handleAddVariable,
+  handleRemoveVariable,
+  handleVariableChange,
+}) => (
   <div className="space-y-2">
     <div className="flex items-center justify-between">
       <label className="text-sm font-medium">Custom Variables</label>
-      <Button type="button" variant="outline" size="sm" onClick={handleAddVariable}>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={handleAddVariable}
+      >
         <Plus className="w-4 h-4 mr-2" />
         Add Variable
       </Button>
@@ -71,11 +102,18 @@ const CustomVariables = ({ customVars, handleAddVariable, handleRemoveVariable, 
           <Input
             placeholder="Variable value"
             value={variable.value}
-            onChange={(e) => handleVariableChange(index, "value", e.target.value)}
-            className="flex-1"
+            onChange={(e) =>
+              handleVariableChange(index, "value", e.target.value)
+            }
+            className="flex-1 capitalize"
           />
           {index > 0 && (
-            <Button type="button" variant="outline" size="icon" onClick={() => handleRemoveVariable(index)}>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => handleRemoveVariable(index)}
+            >
               <X className="w-4 h-4" />
             </Button>
           )}
@@ -108,12 +146,12 @@ export default function SendMail() {
     resolver: zodResolver(mailSchema),
     defaultValues: {
       templateId: "",
-      recipients: [],
+      contacts: [],
       customVariables: {},
     },
   });
 
-  const watchRecipients = watch("recipients");
+  const watchContacts = watch("contacts");
 
   // Load templates and contacts on mount
   useEffect(() => {
@@ -180,7 +218,10 @@ export default function SendMail() {
   // Select or deselect all contacts
   const handleSelectAll = (checked) => {
     setSelectAll(checked);
-    setValue("recipients", checked ? contacts.map((contact) => contact.email) : []);
+    setValue(
+      "contacts",
+      checked ? contacts.map((contact) => contact.email) : []
+    );
   };
 
   // Handle form submission
@@ -204,7 +245,7 @@ export default function SendMail() {
       let response;
       if (activeTab === "single") {
         if (!manualEmail) {
-          throw new Error("Recipient email is required for single email sending");
+          throw new Error("Contact email is required for single email sending");
         }
         const singleEmailData = {
           templateId: data.templateId,
@@ -223,12 +264,16 @@ export default function SendMail() {
         description:
           activeTab === "single"
             ? "Email sent successfully"
-            : `Successfully sent to ${response.data.results.successful.length} recipient(s)${
-                response.data.results.failed?.length ? `. Failed: ${response.data.results.failed.length}` : ""
+            : `Successfully sent to ${
+                response.data.results.successful.length
+              } contact(s)${
+                response.data.results.failed?.length
+                  ? `. Failed: ${response.data.results.failed.length}`
+                  : ""
               }`,
       });
 
-      setValue("recipients", []);
+      setValue("contacts", []);
       setManualEmail("");
       setCustomVars([{ key: "", value: "" }]);
     } catch (error) {
@@ -244,11 +289,16 @@ export default function SendMail() {
 
   return (
     <div className="space-y-8">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <Card>
           <CardHeader>
             <CardTitle>Send Email</CardTitle>
-            <CardDescription>Send bulk or single emails using templates</CardDescription>
+            <CardDescription>
+              Send bulk or single emails using templates
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -258,53 +308,79 @@ export default function SendMail() {
               </TabsList>
               <TabsContent value="bulk">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <TemplateSelector control={control} templates={templates} errors={errors} />
+                  <TemplateSelector
+                    control={control}
+                    templates={templates}
+                    errors={errors}
+                  />
 
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="selectAll" checked={selectAll} onCheckedChange={handleSelectAll} />
-                      <label htmlFor="selectAll" className="text-sm font-medium">
+                      <Checkbox
+                        id="selectAll"
+                        checked={selectAll}
+                        onCheckedChange={handleSelectAll}
+                      />
+                      <label
+                        htmlFor="selectAll"
+                        className="text-sm font-medium"
+                      >
                         Select All Contacts
                       </label>
                     </div>
                     <div className="p-2 overflow-y-auto border rounded-md max-h-60">
-      {contactsLoading ? (
-        <div className="flex flex-col items-center justify-center py-8 space-y-2">
-          <div className="w-6 h-6 border-2 rounded-full border-primary border-t-transparent animate-spin" />
-          <p className="text-sm text-muted-foreground">Loading contacts...</p>
-        </div>
-      ) : contacts.length === 0 ? (
-        <div className="flex items-center justify-center py-8">
-          <p className="text-sm text-muted-foreground">No contacts found</p>
-        </div>
-      ) : (
-        contacts.map((contact) => (
-          <div key={contact._id} className="flex items-center py-1 space-x-2">
-            <Controller
-              name="recipients"
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  id={contact._id}
-                  checked={field.value.includes(contact.email)}
-                  onCheckedChange={(checked) => {
-                    const updatedRecipients = checked
-                      ? [...field.value, contact.email]
-                      : field.value.filter((email) => email !== contact.email);
-                    field.onChange(updatedRecipients);
-                    setSelectAll(updatedRecipients.length === contacts.length);
-                  }}
-                />
-              )}
-            />
-            <label htmlFor={contact._id} className="text-sm">
-              {contact.email} - {contact.name}
-            </label>
-          </div>
-        ))
-      )}
-    </div>
-                    {errors.recipients && <p className="text-sm text-red-500">{errors.recipients.message}</p>}
+                      {contactsLoading ? (
+                        <div className="flex flex-col items-center justify-center py-8 space-y-2">
+                          <div className="w-6 h-6 border-2 rounded-full border-primary border-t-transparent animate-spin" />
+                          <p className="text-sm text-muted-foreground">
+                            Loading contacts...
+                          </p>
+                        </div>
+                      ) : contacts.length === 0 ? (
+                        <div className="flex items-center justify-center py-8">
+                          <p className="text-sm text-muted-foreground">
+                            No contacts found
+                          </p>
+                        </div>
+                      ) : (
+                        contacts.map((contact) => (
+                          <div
+                            key={contact._id}
+                            className="flex items-center py-1 space-x-2"
+                          >
+                            <Controller
+                              name="contacts"
+                              control={control}
+                              render={({ field }) => (
+                                <Checkbox
+                                  id={contact._id}
+                                  checked={field.value.includes(contact.email)}
+                                  onCheckedChange={(checked) => {
+                                    const updatedContacts = checked
+                                      ? [...field.value, contact.email]
+                                      : field.value.filter(
+                                          (email) => email !== contact.email
+                                        );
+                                    field.onChange(updatedContacts);
+                                    setSelectAll(
+                                      updatedContacts.length === contacts.length
+                                    );
+                                  }}
+                                />
+                              )}
+                            />
+                            <label htmlFor={contact._id} className="text-sm">
+                              {contact.email} - {contact.name}
+                            </label>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    {errors.contacts && (
+                      <p className="text-sm text-red-500">
+                        {errors.contacts.message}
+                      </p>
+                    )}
                   </div>
 
                   <CustomVariables
@@ -314,20 +390,28 @@ export default function SendMail() {
                     handleVariableChange={handleVariableChange}
                   />
 
-                  <Button type="submit" className="w-full" disabled={sending || templatesLoading || contactsLoading}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={sending || templatesLoading || contactsLoading}
+                  >
                     {sending ? "Sending..." : "Send Bulk Email"}
                   </Button>
                 </form>
               </TabsContent>
               <TabsContent value="single">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <TemplateSelector control={control} templates={templates} errors={errors} />
+                  <TemplateSelector
+                    control={control}
+                    templates={templates}
+                    errors={errors}
+                  />
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Recipient Email</label>
+                    <label className="text-sm font-medium">Contact Email</label>
                     <Input
                       type="email"
-                      placeholder="Enter recipient email"
+                      placeholder="Enter contact email"
                       value={manualEmail}
                       onChange={(e) => setManualEmail(e.target.value)}
                     />
@@ -340,7 +424,11 @@ export default function SendMail() {
                     handleVariableChange={handleVariableChange}
                   />
 
-                  <Button type="submit" className="w-full" disabled={sending || templatesLoading || !manualEmail}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={sending || templatesLoading || !manualEmail}
+                  >
                     {sending ? "Sending..." : "Send Single Email"}
                   </Button>
                 </form>

@@ -14,7 +14,7 @@ import { campaignApi, contactApi, templateApi } from "@/services/api"
 const campaignSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   templateId: z.string().min(1, "Please select a template"),
-  recipients: z.array(z.string()).min(1, "At least one recipient is required"),
+  contacts: z.array(z.string()).min(1, "At least one contact is required"),
   scheduledDate: z.date().nullable(),
 })
 const CampaignCreation = () => {
@@ -22,7 +22,7 @@ const CampaignCreation = () => {
   const [formData, setFormData] = useState({
     name: "",
     templateId: "",
-    recipients: [],
+    contacts: [],
     scheduledDate: null,
   })
   const navigate = useNavigate()
@@ -47,7 +47,7 @@ const CampaignCreation = () => {
   const steps = [
     { title: "Campaign Name", icon: Mail },
     { title: "Select Template", icon: CheckCircle2 },
-    { title: "Add Recipients", icon: Users },
+    { title: "Add Contacts", icon: Users },
     { title: "Schedule", icon: Calendar },
   ]
   
@@ -89,7 +89,7 @@ const CampaignCreation = () => {
           templateId: campaignSchema.shape.templateId,
         }).parse({ templateId: formData.templateId })
       } else if (currentStep === 3) {
-        campaignSchema.shape.recipients.parse(formData.recipients)
+        campaignSchema.shape.contacts.parse(formData.contacts)
       }
       return true
     } catch (error) {
@@ -109,7 +109,7 @@ const CampaignCreation = () => {
       setSelectAll(isChecked);
       setFormData((prev) => ({
         ...prev,
-        recipients: isChecked ? contacts.map((contact) => contact._id) : [],
+        contacts: isChecked ? contacts.map((contact) => contact._id) : [],
       }));
     },
     [contacts]
@@ -118,17 +118,17 @@ const CampaignCreation = () => {
     (checked, contactId) => {
       setFormData((prev) => ({
         ...prev,
-        recipients: checked ? [...prev.recipients, contactId] : prev.recipients.filter((id) => id !== contactId),
+        contacts: checked ? [...prev.contacts, contactId] : prev.contacts.filter((id) => id !== contactId),
       }))
-      setSelectAll(checked && formData.recipients.length + (checked ? 1 : -1) === contacts.length)
+      setSelectAll(checked && formData.contacts.length + (checked ? 1 : -1) === contacts.length)
     },
-    [contacts.length, formData.recipients.length],
+    [contacts.length, formData.contacts.length],
   )
   const renderStepIndicator = () => {
     const steps = [
       { title: "Campaign Name", icon: Mail },
       { title: "Select Template", icon: CheckCircle2 },
-      { title: "Add Recipients", icon: Users },
+      { title: "Add Contacts", icon: Users },
       { title: "Schedule", icon: Calendar },
     ]
     return (
@@ -250,7 +250,7 @@ const CampaignCreation = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                      {formData.recipients.length} recipients selected
+                      {formData.contacts.length} contacts selected
                     </div>
                     <Button
                       variant="outline"
@@ -284,7 +284,7 @@ const CampaignCreation = () => {
                           <TableRow key={contact._id}>
                             <TableCell>
                               <Checkbox
-                                checked={formData.recipients.includes(contact._id)}
+                                checked={formData.contacts.includes(contact._id)}
                                 onCheckedChange={(checked) =>
                                   handleRecipientChange(checked, contact._id)
                                 }
@@ -416,7 +416,7 @@ const CampaignCreation = () => {
             ) : (
               <Button
                 onClick={handleSubmit}
-                disabled={loading || formData.recipients.length === 0}
+                disabled={loading || formData.contacts.length === 0}
                 className="w-32"
               >
                 {loading ? (
