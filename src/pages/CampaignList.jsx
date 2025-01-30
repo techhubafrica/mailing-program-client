@@ -131,15 +131,15 @@ const CampaignList = () => {
 
   return (
     <div className="container px-4 py-8 mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Campaign Management</h1>
-        <Button asChild className="px-4 py-2 text-white rounded-full">
-          <Link to="/campaigns/create">
-            <Plus className="w-5 h-5 mr-2" />
-            Create Campaign
-          </Link>
-        </Button>
-      </div>
+      <div className="flex flex-col items-center justify-between gap-3 mb-8 md:flex-row">
+      <h1 className="text-3xl font-bold text-gray-800">Campaign Management</h1>
+      <Button asChild className="px-4 py-2 text-white rounded-full">
+        <Link to="/campaigns/create">
+          <Plus className="w-5 h-5 mr-2" />
+          Create Campaign
+        </Link>
+      </Button>
+    </div>
 
       {campaigns.length === 0 ? (
         <Card className="overflow-hidden bg-white rounded-lg shadow-lg">
@@ -147,9 +147,9 @@ const CampaignList = () => {
             <FolderX className="w-24 h-24 mb-6 text-gray-400" />
             <h2 className="mb-2 text-2xl font-semibold text-gray-700">No Campaigns Found</h2>
             <p className="mb-6 text-gray-500">
-              You haven't created any campaigns yet. Start by creating your first campaign.
+              You haven&#39;t created any campaigns yet. Start by creating your first campaign.
             </p>
-            <Button asChild className="px-6 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600">
+            <Button asChild className="px-6 py-2 text-white rounded-ful">
               <Link to="/campaigns/create">Create Your First Campaign</Link>
             </Button>
           </CardContent>

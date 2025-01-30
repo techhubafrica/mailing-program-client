@@ -65,7 +65,7 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">Email Campaign Overview</p>

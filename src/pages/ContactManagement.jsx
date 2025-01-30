@@ -73,12 +73,12 @@ export default function ContactManagement() {
           <CardDescription>Manage your contacts and add new ones</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex space-x-4 mb-4">
+          <div className="flex flex-col gap-2 mb-4 space-x-4 md:flex-row">
             <AddContactDialog onContactAdded={() => fetchContacts(page, search)} />
             <CSVUploadDialog onContactsUploaded={() => fetchContacts(page, search)} />
           </div>
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="absolute text-gray-400 transform -translate-y-1/2 left-2 top-1/2" />
             <Input
               type="text"
               placeholder="Search contacts..."
@@ -97,9 +97,9 @@ export default function ContactManagement() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-muted-foreground">Loading contacts...</div>
+            <div className="py-8 text-center text-muted-foreground">Loading contacts...</div>
           ) : contacts.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
               No contacts found. Add your first contact using the button above.
             </div>
           ) : (
@@ -127,7 +127,7 @@ export default function ContactManagement() {
                         <TableCell>{contact.email}</TableCell>
                         <TableCell>{contact.organization || "-"}</TableCell>
                         <TableCell>
-                          <div className="flex gap-1 flex-wrap">
+                          <div className="flex flex-wrap gap-1">
                             {contact.tags?.length > 0 ? (
                               contact.tags.map((tag) => (
                                 <Badge key={tag} variant="secondary">
@@ -135,7 +135,7 @@ export default function ContactManagement() {
                                 </Badge>
                               ))
                             ) : (
-                              <span className="text-muted-foreground text-sm">No tags</span>
+                              <span className="text-sm text-muted-foreground">No tags</span>
                             )}
                           </div>
                         </TableCell>
@@ -146,7 +146,7 @@ export default function ContactManagement() {
                               onContactUpdated={() => fetchContacts(page, search)}
                             />
                             <Button variant="destructive" size="icon" onClick={() => handleDelete(contact._id)}>
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -155,7 +155,7 @@ export default function ContactManagement() {
                   </TableBody>
                 </Table>
               </AnimatePresence>
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex items-center justify-between mt-4">
                 <Button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
                   Previous
                 </Button>

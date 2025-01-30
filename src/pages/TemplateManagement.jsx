@@ -170,7 +170,7 @@ export default function TemplateManagement() {
   return (
     <div className="space-y-8">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
+        <CardHeader className="flex flex-col items-center justify-between gap-2 pb-4 space-y-0 md:flex-row">
           <div>
             <CardTitle>Email Templates</CardTitle>
             <CardDescription>Manage your email templates and variables</CardDescription>
