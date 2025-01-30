@@ -8,6 +8,7 @@ import { Loader2, RefreshCw } from "lucide-react"
 import { KeyMetrics } from "@/components/KeyMetrics"
 import { RecipientDistribution } from "@/components/RecipientDistribution"
 import { CampaignTable } from "@/components/CampaignTable"
+import { Card, CardHeader } from "@/components/ui/card"
 
 const Dashboard = () => {
   const [campaigns, setCampaigns] = useState([])
@@ -64,8 +65,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
+    <Card className="p-6 space-y-6">
+      <CardHeader className="flex flex-col items-center justify-between gap-2 md:flex-row">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">Email Campaign Overview</p>
@@ -73,7 +74,7 @@ const Dashboard = () => {
         <Button asChild>
           <Link to="/campaigns/create">Create Campaign</Link>
         </Button>
-      </div>
+      </CardHeader>
 
       <div className="flex mb-4 space-x-4">
         <Input
@@ -99,7 +100,7 @@ const Dashboard = () => {
       <KeyMetrics campaigns={campaigns} />
       <RecipientDistribution campaigns={campaigns} />
       <CampaignTable campaigns={campaigns} onRefresh={loadCampaigns} />
-    </div>
+    </Card>
   )
 }
 

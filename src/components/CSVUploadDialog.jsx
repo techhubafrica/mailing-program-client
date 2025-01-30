@@ -46,40 +46,85 @@ export function CSVUploadDialog({ onContactsUploaded }) {
     formData.append("file", file)
 
     try {
-      const response = await fetch('https://tech-hub-mailing-program-server.onrender.com/api/contacts/upload', {
-        method: 'POST',
-        body: formData,
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          setUploadProgress(percentCompleted)
+      // Using XMLHttpRequest for better upload progress tracking
+      const xhr = new XMLHttpRequest()
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100)
+          setUploadProgress(percentComplete)
         }
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json()
+      const uploadPromise = new Promise((resolve, reject) => {
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText)
+              resolve(response)
+            } catch (e) {
+              reject(new Error('Invalid JSON response from server'))
+            }
+          } else {
+            reject(new Error(`HTTP Error: ${xhr.status}`))
+          }
+        }
+        
+        xhr.onerror = () => reject(new Error('Network error occurred'))
+        
+        xhr.open('POST', 'https://tech-hub-mailing-program-server.onrender.com/api/contacts/upload')
+        xhr.send(formData)
+      })
+
+      const data = await uploadPromise
       setUploadResults(data)
       
-      if (data.errors.length === 0) {
-        toast.success("Contacts uploaded successfully", {
-          description: `Imported: ${data.imported}, Duplicates: ${data.duplicates}`,
+      // Check if data.errors exists and has items
+      if (!data.errors || data.errors.length === 0) {
+        toast.success("Upload successful", {
+          description: `Imported ${data.imported || 0} contacts${data.duplicates ? `, ${data.duplicates} duplicates skipped` : ''}`,
         })
         onContactsUploaded?.()
         setOpen(false)
-        // window.location.reload()
       } else {
-        toast.warning("Contacts uploaded with errors", {
-          description: `Imported: ${data.imported}, Errors: ${data.errors.length}`,
-        })
+        // Only show warning if there are actual errors
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+          // toast.warning("Upload completed with errors", {
+          //   description: `Imported: ${data.imported || 0}, Errors: ${data.errors.length}`,
+          // })
+        } else {
+          // If no errors, treat as success
+          toast.success("Upload successful", {
+            description: `Imported ${data.imported || 0} contacts${data.duplicates ? `, ${data.duplicates} duplicates skipped` : ''}`,
+          })
+          onContactsUploaded?.()
+          setOpen(false)
+        }
       }
     } catch (error) {
-      toast.error("Error uploading contacts", {
-        description: error.message || "Something went wrong",
+      console.error('Upload error:', error)
+      toast.error("Upload failed", {
+        description: error.message || "Please try again",
       })
+      setUploadProgress(0)
     } finally {
       setIsUploading(false)
+    }
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+  const handleDrop = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    
+    const files = event.dataTransfer.files
+    if (files?.length > 0) {
+      event.target.files = files // Simulate file input change
+      handleFileUpload(event)
     }
   }
 
@@ -103,17 +148,26 @@ export function CSVUploadDialog({ onContactsUploaded }) {
           <label
             htmlFor="dropzone-file"
             className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               {isUploading ? (
-                <Loader2 className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400 animate-spin" />
+                <>
+                  <Loader2 className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400 animate-spin" />
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Uploading... {uploadProgress}%
+                  </p>
+                </>
               ) : (
-                <Upload className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
+                <>
+                  <Upload className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">CSV file (MAX. 5MB)</p>
+                </>
               )}
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Click to upload</span> or drag and drop
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">CSV file (MAX. 5MB)</p>
             </div>
             <input
               id="dropzone-file"
@@ -128,7 +182,6 @@ export function CSVUploadDialog({ onContactsUploaded }) {
         {isUploading && (
           <div className="mt-4">
             <Progress value={uploadProgress} className="w-full" />
-            <p className="mt-2 text-center">Uploading... {uploadProgress}%</p>
           </div>
         )}
       </DialogContent>

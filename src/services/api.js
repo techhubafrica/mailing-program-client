@@ -64,7 +64,7 @@ export const contactApi = {
       onUploadProgress,
     })
   },
-  getAll: (page = 1, limit = 10, search = "") => api.get(`/contacts?page=${page}&limit=${limit}&search=${search}`),
+  getAll: (page = 1, limit = 100, search = "") => api.get(`/contacts?page=${page}&limit=${limit}&search=${search}`),
   delete: (id) => api.delete(`/contacts/${id}`),
   update: (id, data) => api.put(`/contacts/${id}`, data),
   create: (data) => api.post("/contacts", data),
