@@ -1,8 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Mail, BarChart2, Tags, FileText, Contact, Send, Calendar } from "lucide-react"
 
-export const KeyMetrics = ({ campaigns, recipientStats, templates, contacts }) => {
-  const totalRecipients = campaigns.reduce((total, campaign) => total + (campaign.recipients?.length || 0), 0)
+export const KeyMetrics = ({ campaigns, contactStats, templates, contacts }) => {
+  const totalContacts = campaigns.reduce((total, campaign) => total + (campaign.recipients?.length || 0), 0)
 
   const averageOpenRate = campaigns.length
     ? Math.round(campaigns.reduce((sum, c) => sum + ((c.stats.opened / c.stats.sent) * 100 || 0), 0) / campaigns.length)
@@ -13,8 +13,8 @@ export const KeyMetrics = ({ campaigns, recipientStats, templates, contacts }) =
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       <MetricCard
-        title="Total Recipients"
-        value={totalRecipients.toLocaleString()}
+        title="Total contacts"
+        value={totalContacts.toLocaleString()}
         description="Across all campaigns"
         icon={<Users className="w-8 h-8 text-blue-500" />}
         trend="+12% from last month"
