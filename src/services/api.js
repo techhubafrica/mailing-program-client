@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const api = axios.create({
-     baseURL: "https://tech-hub-mailing-program-server.onrender.com/api"
+     baseURL: "https://mailing-program-server.onrender.com/api"
    //baseURL: "http://localhost:5000/api",
 })
 export const fetchCampaigns = async ({ status = "", search = "" }) => {
