@@ -72,7 +72,7 @@ export function CSVUploadDialog({ onContactsUploaded }) {
         
         xhr.onerror = () => reject(new Error('Network error occurred'))
         
-        xhr.open('POST', 'https://tech-hub-mailing-program-server.onrender.com/api/contacts/upload')
+        xhr.open('POST', 'https://mailing-program-server.onrender.com/api/contacts/upload')
         xhr.send(formData)
       })
 
